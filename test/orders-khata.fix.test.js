@@ -136,3 +136,63 @@ test('recordSettlement() rounds totalSettled and balance to paise', function () 
   assert.equal(result.customer.totalSettled, 0.30);
   assert.equal(result.customer.balance, 2431.71);
 });
+
+[
+  ['0.004', 'Settlement amount must be in whole paise'],
+  [0.004, 'Settlement amount must be in whole paise'],
+  [1e-9, 'Settlement amount must be in whole paise'],
+  [12.345, 'Settlement amount must be in whole paise'],
+  [1e307, 'Settlement amount is too large'],
+  ['1e307', 'Settlement amount is too large']
+].forEach(function (example) {
+  var amount = example[0];
+  var error = example[1];
+
+  test('recordSettlement() rejects ' + JSON.stringify(amount) + ' without mutation', function () {
+    var db = makeDb();
+    var before = makeDb();
+    var result = ledger.recordSettlement(db, 1, amount, 'upi', '');
+
+    assert.deepEqual(
+      { result: { ok: result.ok, error: result.error }, db: db },
+      { result: { ok: false, error: error }, db: before }
+    );
+  });
+});
+
+test('recordSettlement() rejects a non-finite resulting balance without mutation', function () {
+  var db = makeDb();
+  db.customers[0].openingBalance = 1e307;
+  var before = structuredClone(db);
+
+  assert.deepEqual(ledger.recordSettlement(db, 1, 500, 'upi', ''), {
+    ok: false,
+    error: 'Settlement amount is too large'
+  });
+  assert.deepEqual(db, before);
+});
+
+test('recordSettlement() accepts whole-paise decimal strings', function () {
+  [
+    ['0.01', 0.01, 1200.01, 1232],
+    ['500.50', 500.50, 1700.50, 731.51]
+  ].forEach(function (example) {
+    var db = makeDb();
+    var result = ledger.recordSettlement(db, 1, example[0], 'upi', '');
+
+    assert.equal(result.ok, true);
+    assert.equal(result.settlement.amount, example[1]);
+    assert.equal(result.customer.totalSettled, example[2]);
+    assert.equal(result.customer.balance, example[3]);
+  });
+});
+
+test('recordSettlement() rejects an unknown customer without mutation', function () {
+  var db = makeDb();
+
+  assert.deepEqual(ledger.recordSettlement(db, -1, 500, 'upi', ''), {
+    ok: false,
+    error: 'Customer not found'
+  });
+  assert.deepEqual(db, makeDb());
+});
