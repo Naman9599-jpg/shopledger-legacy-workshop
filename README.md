@@ -17,9 +17,9 @@ Each PR has **two commits: characterization tests first, then the fix.** Each on
 ## Edge cases these fixes also handle
 
 - **Expired coupons on old invoices (#1).** Simply re-running today's coupon rules would drop the discount once a coupon expires. A ₹944 DIWALI20 bill would reprint as ₹1,180. The invoice reprints the **discount that was actually billed**, through a small pure extraction in `lib/pricing.js` (`computeTotalsWithDiscount`), so checkout itself is unchanged.
-- **Auditable invoice (#1).** Each line shows Gross → Discount → Taxable → GST % → GST amount, with separate CGST and SGST totals.
+- **Auditable invoice (#1).** Each line shows Gross → Discount → Taxable → GST % → GST amount, with separate CGST and SGST totals. The printed line discounts always add up to the billed discount: the paisa left over from rounding is spread within each line's bounds, so nothing billed changes.
 - **Duplicate cart lines (#2).** Stock is checked against the **total** quantity per product, so two lines of the same item can't oversell. Wholesale holds (`reserved`) are never released by a normal order cancel.
-- **Bad or old settlement data (#3).** Text, NaN, zero and negative amounts are rejected without changing anything. Settled totals that are already stored as text are converted before adding. Amounts are rounded to paise.
+- **Bad or old settlement data (#3).** Text, NaN, zero and negative amounts are rejected without changing anything. Settled totals that are already stored as text are converted before adding. Amounts are rounded to paise. Fractional-paise amounts (e.g. `0.004`) and overflowing amounts (e.g. `1e307`) are rejected before anything changes.
 
 ## Architecture
 
@@ -43,17 +43,24 @@ Placing orders changes `data/db.json`. Undo that with `git checkout data/db.json
 The tests live on the fix branches and use Node's built-in test runner (no extra dependencies). They use in-memory copies of the data and never touch `data/db.json`.
 
 ```bash
-git checkout fix/invoice-gst-mismatch                    # PR #7: 25 tests
+git checkout fix/invoice-gst-mismatch                    # PR #7: 32 tests
 node --test
 
 git checkout fix/inventory-last-unit-and-cancel-restock  # PR #8: 18 tests
 node --test
 
-git checkout fix/order-dates-and-khata-settlement        # PR #9: 26 tests
+git checkout fix/order-dates-and-khata-settlement        # PR #9: 35 tests
 node --test
 ```
 
-All three branches merge together without conflicts, and the combined suite passes 69 of 69.
+All three branches merge together without conflicts, and the combined suite passes 85 of 85.
+
+## Code review
+
+Each PR was also reviewed with Codex (`codex exec review`). The findings, my local verification and the follow-up fixes are posted as comments on the PRs:
+- **PR #7:** printed line discounts now always add up to the billed total.
+- **PR #8:** no findings.
+- **PR #9:** fractional-paise and overflowing settlement amounts are now rejected.
 
 ## Working rules
 
@@ -68,4 +75,3 @@ All three branches merge together without conflicts, and the combined suite pass
 - `config.js` hard-codes the admin export key, and `/api/admin/export` accepts it in the query string.
 - The dashboard builds HTML with `innerHTML` from customer and product names, which allows stored HTML injection.
 - `data/db.json` is rewritten on every request, with no locking or atomic replace.
-- Checkout rounds each line's share of a discount separately, so on some orders the line discounts can differ from the total discount by a paise.
