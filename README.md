@@ -49,18 +49,18 @@ node --test
 git checkout fix/inventory-last-unit-and-cancel-restock  # PR #8: 18 tests
 node --test
 
-git checkout fix/order-dates-and-khata-settlement        # PR #9: 35 tests
+git checkout fix/order-dates-and-khata-settlement        # PR #9: 37 tests
 node --test
 ```
 
-All three branches merge together without conflicts, and the combined suite passes 85 of 85.
+All three branches merge together without conflicts, and the combined suite passes 87 of 87.
 
 ## Code review
 
 Each PR was also reviewed with Codex (`codex exec review`). The findings, my local verification and the follow-up fixes are posted as comments on the PRs:
 - **PR #7:** printed line discounts now always add up to the billed total.
 - **PR #8:** no findings.
-- **PR #9:** fractional-paise and overflowing settlement amounts are now rejected.
+- **PR #9:** fractional-paise and overflowing settlement amounts are now rejected, and the Khata tab shows Total Settled as a ₹ amount.
 
 ## Working rules
 
