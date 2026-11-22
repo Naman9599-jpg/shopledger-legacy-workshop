@@ -196,3 +196,27 @@ test('recordSettlement() rejects an unknown customer without mutation', function
   });
   assert.deepEqual(db, makeDb());
 });
+
+test('listCustomers() returns numeric money fields even for legacy string totals', function () {
+  var db = makeDb();
+  var meera = db.customers.find(function (customer) { return customer.id === 1; });
+  meera.totalSettled = '1200';
+  meera.totalBilled = '1982.01';
+
+  var listed = ledger.listCustomers(db).find(function (customer) { return customer.id === 1; });
+
+  assert.equal(listed.totalSettled, 1200);
+  assert.equal(listed.totalBilled, 1982.01);
+  assert.equal(listed.balance, 1232.01);
+});
+
+test('listCustomers() reports the settled total as a number after a string settlement', function () {
+  var db = makeDb();
+  ledger.recordSettlement(db, 1, '500.50', 'upi', '');
+
+  var listed = ledger.listCustomers(db).find(function (customer) { return customer.id === 1; });
+
+  assert.equal(listed.totalSettled, 1700.5);
+  assert.equal(typeof listed.totalSettled, 'number');
+  assert.equal(listed.balance, 731.51);
+});
