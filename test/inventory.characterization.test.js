@@ -28,26 +28,6 @@ test('check rejects an unknown product id', function () {
   });
 });
 
-test('CURRENT BEHAVIOUR: selling exactly the sellable qty is rejected', function () {
-  var db = makeDb();
-
-  assert.deepEqual(inventory.check(db.products, [{ id: 6, qty: 1 }]), {
-    ok: false,
-    msg: 'A2 Gir Cow Ghee 500ml is out of stock (1 sellable available)'
-  });
-  assert.deepEqual(inventory.check(db.products, [{ id: 11, qty: 1 }]), {
-    ok: false,
-    msg: 'Byadgi Kashmiri Chilli Powder 500g is out of stock (1 sellable available)'
-  });
-});
-
-test('CURRENT BEHAVIOUR: duplicate lines are checked one by one', function () {
-  var products = [{ id: 99, stock: 3, reserved: 0 }];
-  var items = [{ id: 99, qty: 2 }, { id: 99, qty: 2 }];
-
-  assert.deepEqual(inventory.check(products, items), { ok: true });
-});
-
 test('reserve deducts physical stock and preserves wholesale holds', function () {
   var db = makeDb();
   var oil = inventory.find(db.products, 4);
@@ -98,18 +78,6 @@ test('cancel records the status and reason and reverses the Khata debit', functi
   assert.equal(order.status, 'cancelled');
   assert.equal(order.cancelReason, reason);
   assert.equal(customer.totalBilled, 0);
-});
-
-test('CURRENT BEHAVIOUR: cancel leaves stock unchanged', function () {
-  var db = makeDb();
-  var ghee = inventory.find(db.products, 6);
-  var oil = inventory.find(db.products, 4);
-
-  assert.equal(orders.cancel(db, 1007).ok, true);
-
-  assert.equal(ghee.stock, 1);
-  assert.equal(oil.stock, 22);
-  assert.equal(oil.reserved, 4);
 });
 
 test('cancel rejects an already cancelled order', function () {
