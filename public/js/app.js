@@ -331,7 +331,7 @@ function renderKhataTable(customers, settlements) {
       '<td class="r">' + fmtMoney(c.creditLimit) + '</td>' +
       '<td class="r">' + fmtMoney(c.openingBalance) + '</td>' +
       '<td class="r">' + fmtMoney(c.totalBilled) + '</td>' +
-      '<td class="r">' + String(c.totalSettled) + '</td>' +
+      '<td class="r">' + fmtMoney(c.totalSettled) + '</td>' +
       '<td class="r"><strong style="color:' + balColor + '">' + fmtMoney(c.balance) + '</strong></td>' +
       '<td class="r"><button type="button" class="btn btn-ghost btn-sm" onclick="prefillSettlement(' + c.id + ')">Settle</button></td>' +
       '</tr>';
