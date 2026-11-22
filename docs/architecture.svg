@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1150" role="img" aria-label="ShopLedger architecture">
+<defs>
+<marker id="blue" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#235b9e"/></marker>
+<marker id="green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#08745c"/></marker>
+<marker id="red" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a12d41"/></marker>
+</defs>
+<style>
+text{font:16px system-ui,sans-serif;fill:#21354c}.title{font-size:36px;font-weight:750}.head,.section{font-size:17px;font-weight:720}.section,.dep{fill:#235b9e}.mono,.dep{font:14px monospace}.dep{fill:#235b9e}.hot{font:700 14px system-ui,sans-serif;fill:#613ca3}
+.panel{fill:#edf3fa}.card{fill:white;stroke:#c4d3e3}.checkout{fill:#e5f6ef;stroke:#70b6a4}.audit{fill:#fff1f2;stroke:#e5a6af}.badge{fill:#f1e9ff}.blue,.green,.red,.bus{fill:none;stroke-width:1.6}.blue,.bus{stroke:#235b9e}.blue{marker-end:url(#blue)}.green{stroke:#08745c;marker-end:url(#green)}.red{stroke:#a12d41;stroke-dasharray:4 3;marker-end:url(#red)}
+</style><rect width="1600" height="1150" fill="#f8fafc"/>
+<text x="32" y="47" class="title">ShopLedger architecture</text>
+<text x="655" y="26" class="dep">→ require() dependency · short filenames refer to lib/ (except config.js)</text>
+<path d="M655 46H682" class="green"/>
+<text x="693" y="51" class="">Checkout</text>
+<path d="M796 46H824" class="red"/>
+<text x="835" y="51" class="">Invoice / GST Audit</text>
+<rect x="1023" y="34" width="28" height="20" rx="9" class="badge"/>
+<text x="1028" y="49" class="hot">#1</text>
+<text x="1061" y="51" class="">#1–#3 mark fork issue hotspots</text>
+<g id="ui">
+<rect x="28" y="68" width="1544" height="113" rx="9" class="panel"/>
+<text x="44" y="91" class="section">UI</text>
+<rect x="44" y="103" width="900" height="64" rx="9" class="card"/>
+<text x="56" y="125" class="head">Browser · public/index.html + public/js/app.js</text>
+<text x="56" y="146" class="mono">New Order (POS) · Order History · Customer Khata · Inventory &amp; GST Audit</text>
+<rect x="1036" y="76" width="519" height="94" rx="9" class="card"/>
+<text x="1048" y="98" class="head">server.js</text>
+<text x="1048" y="119" class="mono">Express app · static public/ · GET /orders/:id/invoice</text>
+<text x="1048" y="135" class="dep">→ config.js · store.js · orders.js · invoice.js</text>
+<text x="1048" y="151" class="dep">→ express · body-parser · path</text>
+<path d="M945 139H1034" class="blue"/>
+<text x="968" y="129" class="mono">HTTP</text>
+</g>
+<g id="routes">
+<rect x="28" y="201" width="1544" height="191" rx="9" class="panel"/>
+<text x="44" y="224" class="section">Routes · /api</text>
+<path d="M1295 171V191H220V233" class="blue"/>
+<path d="M1295 171V191H593V233" class="blue"/>
+<path d="M1295 171V191H963V233" class="blue"/>
+<path d="M1295 171V191H1350V233" class="blue"/>
+<rect x="44" y="233" width="352" height="149" rx="9" class="card"/>
+<text x="56" y="255" class="head">routes/products.js</text>
+<text x="56" y="276" class="mono">GET /api/products</text>
+<text x="56" y="292" class="mono">GET /api/coupons</text>
+<text x="56" y="308" class="dep">→ express · store.js · inventory.js</text>
+<text x="56" y="324" class="dep">→ tax.js · coupons.js</text>
+<rect x="408" y="233" width="373" height="149" rx="9" class="card"/>
+<text x="420" y="255" class="head">routes/orders.js</text>
+<text x="420" y="276" class="mono">GET /api/orders · GET /api/orders/:id</text>
+<text x="420" y="292" class="mono">POST /api/orders</text>
+<text x="420" y="308" class="mono">POST /api/orders/:id/cancel</text>
+<text x="420" y="324" class="dep">→ express · store.js · inventory.js</text>
+<text x="420" y="340" class="dep">→ pricing.js · coupons.js</text>
+<text x="420" y="356" class="dep">→ orders.js · ledger.js</text>
+<rect x="793" y="233" width="342" height="149" rx="9" class="card"/>
+<text x="805" y="255" class="head">routes/customers.js</text>
+<text x="805" y="276" class="mono">GET /api/customers</text>
+<text x="805" y="292" class="mono">POST /api/customers/:id/settle</text>
+<text x="805" y="308" class="dep">→ express · store.js · ledger.js</text>
+<rect x="1147" y="233" width="408" height="149" rx="9" class="card"/>
+<text x="1159" y="255" class="head">routes/reports.js</text>
+<text x="1159" y="276" class="mono">GET /api/reports/dashboard</text>
+<text x="1159" y="292" class="mono">GET /api/reports/gst-reconciliation</text>
+<text x="1159" y="308" class="mono">POST /api/pricing/preview</text>
+<text x="1159" y="324" class="mono">GET /api/admin/export</text>
+<text x="1159" y="340" class="dep">→ express · config.js · store.js</text>
+<text x="1159" y="356" class="dep">→ reports.js · pricing.js · coupons.js</text>
+</g>
+<g id="lib">
+<rect x="28" y="401" width="1544" height="294" rx="9" class="panel"/>
+<text x="44" y="424" class="section">Lib</text>
+<rect x="44" y="432" width="292" height="121" rx="9" class="card"/>
+<text x="56" y="454" class="head">lib/store.js</text>
+<text x="56" y="475" class="mono">read · write · appendAudit</text>
+<text x="56" y="491" class="dep">→ fs · path</text>
+<rect x="348" y="432" width="292" height="121" rx="9" class="card"/>
+<text x="360" y="454" class="head">lib/orders.js</text>
+<text x="360" y="475" class="mono">add · get</text>
+<text x="360" y="491" class="mono">cancel</text>
+<rect x="602" y="476" width="28" height="20" rx="9" class="badge"/>
+<text x="607" y="491" class="hot">#2</text>
+<text x="360" y="507" class="mono">list</text>
+<rect x="602" y="492" width="28" height="20" rx="9" class="badge"/>
+<text x="607" y="507" class="hot">#3</text>
+<text x="360" y="523" class="dep">→ dates.js · inventory.js</text>
+<text x="360" y="539" class="dep">→ ledger.js</text>
+<rect x="652" y="432" width="292" height="121" rx="9" class="card"/>
+<text x="664" y="454" class="head">lib/ledger.js</text>
+<text x="664" y="475" class="mono">findCustomer · listCustomers</text>
+<text x="664" y="491" class="mono">chargeOrderToKhata</text>
+<text x="664" y="507" class="mono">reverseOrderDebit</text>
+<text x="664" y="523" class="mono">recordSettlement</text>
+<rect x="906" y="508" width="28" height="20" rx="9" class="badge"/>
+<text x="911" y="523" class="hot">#3</text>
+<text x="664" y="539" class="dep">→ dates.js</text>
+<rect x="956" y="432" width="292" height="121" rx="9" class="card"/>
+<text x="968" y="454" class="head">lib/reports.js</text>
+<text x="968" y="475" class="mono">getDashboardSummary</text>
+<text x="968" y="491" class="mono">getGstReconciliation</text>
+<text x="968" y="507" class="dep">→ inventory.js · ledger.js</text>
+<text x="968" y="523" class="dep">→ invoice.js</text>
+<rect x="1260" y="432" width="292" height="121" rx="9" class="card"/>
+<text x="1272" y="454" class="head">lib/pricing.js</text>
+<text x="1272" y="475" class="mono">round2 · subtotal · discount</text>
+<text x="1272" y="491" class="mono">computeTotals</text>
+<text x="1272" y="507" class="dep">→ tax.js · coupons.js</text>
+<rect x="44" y="563" width="292" height="121" rx="9" class="card"/>
+<text x="56" y="585" class="head">lib/inventory.js</text>
+<text x="56" y="606" class="mono">find · getSellableStock</text>
+<text x="56" y="622" class="mono">check · release</text>
+<rect x="298" y="607" width="28" height="20" rx="9" class="badge"/>
+<text x="303" y="622" class="hot">#2</text>
+<text x="56" y="638" class="mono">reserve · summarize</text>
+<text x="56" y="654" class="dep">→ config.js</text>
+<rect x="348" y="563" width="292" height="121" rx="9" class="card"/>
+<text x="360" y="585" class="head">lib/coupons.js</text>
+<text x="360" y="606" class="mono">normalizeCode · getCoupon</text>
+<text x="360" y="622" class="mono">validate · calculateDiscount</text>
+<text x="360" y="638" class="mono">listActive</text>
+<text x="360" y="654" class="dep">→ config.js</text>
+<rect x="652" y="563" width="292" height="121" rx="9" class="card"/>
+<text x="664" y="585" class="head">lib/tax.js</text>
+<text x="664" y="606" class="mono">round2 · getRateForItem</text>
+<text x="664" y="622" class="mono">getSlabPercent · splitCgstSgst</text>
+<text x="664" y="638" class="dep">→ config.js</text>
+<rect x="956" y="563" width="292" height="121" rx="9" class="card"/>
+<text x="968" y="585" class="head">lib/invoice.js</text>
+<rect x="1210" y="570" width="28" height="20" rx="9" class="badge"/>
+<text x="1215" y="585" class="hot">#1</text>
+<text x="968" y="606" class="mono">computeInvoiceFigures · render</text>
+<text x="968" y="622" class="dep">→ config.js</text>
+<rect x="1260" y="563" width="292" height="121" rx="9" class="card"/>
+<text x="1272" y="585" class="head">lib/dates.js</text>
+<rect x="1514" y="570" width="28" height="20" rx="9" class="badge"/>
+<text x="1519" y="585" class="hot">#3</text>
+<text x="1272" y="606" class="mono">today · normalizeDateKey</text>
+<text x="1272" y="622" class="mono">getFiscalYear</text>
+</g>
+<g id="config-data">
+<rect x="28" y="707" width="1544" height="90" rx="9" class="panel"/>
+<text x="44" y="730" class="section">Config &amp; Data</text>
+<path d="M190 684V700" class="bus"/>
+<path d="M494 684V700" class="bus"/>
+<path d="M798 684V700" class="bus"/>
+<path d="M1102 684V700" class="bus"/>
+<path d="M190 700H1102" class="bus"/>
+<path d="M344 700V735" class="blue"/>
+<rect x="44" y="735" width="500" height="54" rx="9" class="card"/>
+<text x="56" y="757" class="head">config.js</text>
+<text x="56" y="778" class="mono">HSN GST slabs · coupons · shop info · adminKey</text>
+<text x="565" y="767" class="mono">lib/store.js</text>
+<path d="M674 762H821" class="blue"/>
+<text x="696" y="752" class="mono">read / write</text>
+<rect x="824" y="735" width="731" height="54" rx="9" class="card"/>
+<text x="836" y="757" class="head">data/db.json</text>
+<text x="836" y="778" class="mono">products · orders · customers · settlements · auditLog</text>
+</g>
+<g id="checkout">
+<rect x="28" y="806" width="1544" height="137" rx="9" class="panel"/>
+<text x="44" y="829" class="section">Placing an order · POST /api/orders</text>
+<rect x="44" y="837" width="182" height="99" rx="9" class="checkout"/>
+<text x="56" y="859" class="head">1  New Order (POS)</text>
+<text x="56" y="880" class="mono">public/js/app.js</text>
+<text x="56" y="896" class="mono">POST /api/orders</text>
+<text x="56" y="912" class="mono">server.js</text>
+<path d="M227 883H240" class="green"/>
+<rect x="242" y="837" width="188" height="99" rx="9" class="checkout"/>
+<text x="254" y="859" class="head">2  routes/orders.js</text>
+<text x="254" y="880" class="mono">store.read</text>
+<text x="254" y="896" class="mono">Resolve order items</text>
+<path d="M431 883H444" class="green"/>
+<rect x="446" y="837" width="188" height="99" rx="9" class="checkout"/>
+<text x="458" y="859" class="head">3  lib/inventory.js</text>
+<text x="458" y="880" class="mono">inventory.check</text>
+<text x="458" y="896" class="mono">Check stock</text>
+<path d="M635 883H648" class="green"/>
+<rect x="650" y="837" width="205" height="99" rx="9" class="checkout"/>
+<text x="662" y="859" class="head">4  Price the order</text>
+<text x="662" y="880" class="mono">pricing.subtotal</text>
+<text x="662" y="896" class="mono">coupons.validate</text>
+<text x="662" y="912" class="mono">pricing.computeTotals</text>
+<text x="662" y="928" class="mono">tax.getRateForItem</text>
+<path d="M856 883H869" class="green"/>
+<rect x="871" y="837" width="293" height="99" rx="9" class="checkout"/>
+<text x="883" y="859" class="head">5  Charge and deduct</text>
+<text x="883" y="880" class="mono">Khata only: chargeOrderToKhata</text>
+<text x="883" y="896" class="mono">inventory.reserve</text>
+<path d="M1165 883H1178" class="green"/>
+<rect x="1180" y="837" width="175" height="99" rx="9" class="checkout"/>
+<text x="1192" y="859" class="head">6  Save and log</text>
+<text x="1192" y="880" class="mono">orders.add</text>
+<text x="1192" y="896" class="mono">store.appendAudit</text>
+<path d="M1356 883H1369" class="green"/>
+<rect x="1371" y="837" width="174" height="99" rx="9" class="checkout"/>
+<text x="1383" y="859" class="head">7  data/db.json</text>
+<text x="1383" y="880" class="mono">store.write</text>
+<text x="1383" y="896" class="mono">HTTP 201</text>
+</g>
+<g id="audit">
+<rect x="28" y="952" width="1544" height="176" rx="9" class="panel"/>
+<text x="44" y="975" class="section">Invoice / GST Audit</text>
+<rect x="44" y="982" width="223" height="68" rx="9" class="audit"/>
+<text x="56" y="1004" class="head">A  Inventory &amp; GST Audit</text>
+<text x="56" y="1025" class="mono">public/js/app.js</text>
+<path d="M268 1013H281" class="red"/>
+<rect x="283" y="982" width="331" height="68" rx="9" class="audit"/>
+<text x="295" y="1004" class="head">B  routes/reports.js</text>
+<text x="295" y="1025" class="mono">GET /api/reports/gst-reconciliation</text>
+<path d="M615 1013H628" class="red"/>
+<rect x="630" y="982" width="275" height="68" rx="9" class="audit"/>
+<text x="642" y="1004" class="head">C  lib/reports.js</text>
+<text x="642" y="1025" class="mono">reports.getGstReconciliation</text>
+<path d="M906 1013H919" class="red"/>
+<rect x="921" y="982" width="278" height="68" rx="9" class="audit"/>
+<text x="933" y="1004" class="head">D  lib/invoice.js</text>
+<text x="933" y="1025" class="mono">invoice.computeInvoiceFigures</text>
+<path d="M1200 1013H1213" class="red"/>
+<rect x="1215" y="982" width="339" height="68" rx="9" class="audit"/>
+<text x="1227" y="1004" class="head">E  data/db.json</text>
+<text x="1227" y="1025" class="mono">Compare with stored order.total</text>
+<text x="1227" y="1041" class="mono">and order.tax from store.read</text>
+<text x="44" y="1077" class="mono">server.js · GET /orders/:id/invoice</text>
+<path d="M356 1072H410" class="red"/>
+<text x="425" y="1077" class="mono">invoice.render</text>
+<path d="M559 1072H615" class="red"/>
+<text x="630" y="1077" class="mono">invoice.computeInvoiceFigures</text>
+<text x="44" y="1110" class="">Issue #1 · lib/invoice.js requires only config.js. Its GST and discount math runs independently of pricing.js and tax.js.</text>
+</g>
+</svg>
